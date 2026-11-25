@@ -3,58 +3,47 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f1ede3">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f1ede3'/%3E%3Cpath d='M4 16h24' stroke='%23d4473a' stroke-width='2'/%3E%3Cpath d='M16 4v24' stroke='%233457c5' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%232a0d32'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#f2f1ec">
+  <meta name="description" content="CROSS//WARD 十字回廊——由基本几何体构成的横向卷轴塔防。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f2f1ec'/%3E%3Crect x='4' y='15' width='24' height='2' fill='%23e23b2e'/%3E%3Crect x='15' y='4' width='2' height='24' fill='%232f55d9'/%3E%3Crect x='13' y='13' width='6' height='6' fill='%230b0b0b'/%3E%3C/svg%3E">
   <title>十字回廊 · CROSS//WARD</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main id="app" class="app" data-lane="red">
-    <canvas id="stage" role="img" aria-label="横向卷轴塔防游戏画面：黑色礼帽角色站在红色横轴上，中央是深紫色传送门。"></canvas>
+  <main id="app" class="app" data-lane="red" data-shape="vertical">
+    <canvas id="stage" role="img" aria-label="横向卷轴几何塔防画面：黑色矩形角色与黑色圆形史莱姆位于红色战斗轴上，中央是一道黑色裂缝。"></canvas>
 
-    <div class="top-scrim" aria-hidden="true"></div>
-    <div class="bottom-scrim" aria-hidden="true"></div>
-    <div class="paper-grain" aria-hidden="true"></div>
-
-    <header class="topbar">
-      <div class="brand" aria-label="十字回廊">
-        <svg class="brand-mark" viewBox="0 0 46 46" aria-hidden="true">
-          <path class="brand-axis red" d="M3 23h40"/>
-          <path class="brand-axis blue" d="M23 3v40"/>
-          <circle cx="23" cy="23" r="5.2"/>
-          <circle class="brand-ring" cx="23" cy="23" r="10.5"/>
-        </svg>
+    <header class="topbar" aria-label="游戏状态">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><i></i><b></b></span>
         <div class="brand-copy">
-          <h1>十字回廊</h1>
-          <p>CROSS<span>//</span>WARD <i>·</i> AXIS DEFENSE</p>
+          <h1>CROSS<span>//</span>WARD</h1>
+          <p>十字回廊 <i>/</i> AXIS DEFENSE</p>
         </div>
       </div>
 
-      <section class="wave-panel" aria-label="波次与倒计时">
-        <div class="wave-head">
-          <span class="eyebrow">WAVE <b id="waveNo">00</b></span>
-          <span id="waveStatus" class="wave-status">首波接近</span>
+      <section class="wave-block" aria-label="波次">
+        <div class="wave-labels">
+          <span>WAVE <b id="waveNo">00</b></span>
+          <span id="waveStatus">FIRST CONTACT</span>
         </div>
-        <div class="wave-clock-row">
-          <b id="countdown">00:08</b>
-          <span>NEXT SURGE</span>
+        <div class="wave-time-row">
+          <b id="countdown">00:20</b>
+          <span>NEXT RED PORTAL</span>
         </div>
-        <div class="wave-track" aria-hidden="true">
-          <i id="waveFill"></i>
-          <span class="tick t1"></span><span class="tick t2"></span><span class="tick t3"></span>
-        </div>
+        <div class="wave-meter" aria-hidden="true"><i id="waveFill"></i></div>
       </section>
 
-      <section class="status-cluster" aria-label="核心状态与当前轴">
-        <div class="axis-line">
-          <span class="axis-orb" aria-hidden="true"></span>
-          <span id="axisLabel" class="axis-label">红轴 / RED</span>
-          <span id="offlaneCount" class="offlane-count">蓝轴 0</span>
+      <section class="top-status" aria-label="核心与当前轴">
+        <div class="axis-state">
+          <span class="axis-square" aria-hidden="true"></span>
+          <span id="axisLabel" class="axis-name">RED AXIS</span>
+          <span id="axisMode" class="axis-mode">COMBAT</span>
         </div>
-        <div class="core-line">
-          <span class="eyebrow">PORTAL CORE</span>
+        <div class="core-state">
+          <span class="micro-label">CORE</span>
           <div id="integrity" class="integrity" aria-label="核心完整度 10 / 10"></div>
-          <b id="coreNum" class="core-num">10</b>
+          <b id="coreNum">10</b>
         </div>
         <div class="mobile-score">
           <span>SCORE</span>
@@ -63,86 +52,69 @@
       </section>
     </header>
 
-    <aside class="minimap-panel" aria-label="十字轴威胁图">
-      <div class="minimap-head">
-        <span>AXIS MAP</span>
-        <span>四门 / 20s</span>
-      </div>
-      <div class="minimap-art">
-        <canvas id="minimap" width="152" height="152" aria-hidden="true"></canvas>
-        <span class="map-label map-label-r">R</span>
-        <span class="map-label map-label-b">B</span>
-      </div>
-      <div class="axis-monitor">
-        <span class="mono-chip red"><i></i>红 <b id="redCount">0</b></span>
-        <span class="mono-chip blue"><i></i>蓝 <b id="blueCount">0</b></span>
-      </div>
-    </aside>
-
     <div class="tools" aria-label="游戏选项">
       <button id="audioBtn" class="tool-btn" type="button" aria-label="切换声音" title="声音 (M)">
-        <svg class="icon icon-sound" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.3L12 18V6L7.3 9.5H4Z"/><path class="sound-wave" d="M15.2 8.2a5.2 5.2 0 0 1 0 7.6M18 5.8a8.7 8.7 0 0 1 0 12.4"/></svg>
-        <svg class="icon icon-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.3L12 18V6L7.3 9.5H4Z"/><path d="m16 9 5 6m0-6-5 6"/></svg>
+        <span class="sound-on" aria-hidden="true"><i></i><i></i></span>
+        <span class="sound-off" aria-hidden="true"><i></i><i></i></span>
       </button>
-      <button id="pauseBtn" class="tool-btn" type="button" aria-label="暂停游戏" title="暂停 (P)">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
-      </button>
+      <button id="pauseBtn" class="tool-btn pause-icon" type="button" aria-label="暂停游戏" title="暂停 (P)"><i></i><i></i></button>
       <button id="helpBtn" class="tool-btn text-tool" type="button" aria-label="打开玩法说明" title="玩法说明 (H)">?</button>
+    </div>
+
+    <div id="threatBadge" class="threat-badge" aria-live="polite">
+      <span class="threat-bar" aria-hidden="true"></span>
+      <span class="threat-copy"><b>RED AXIS</b><small id="threatText">0 HOSTILES</small></span>
     </div>
 
     <div id="announce" class="announce" aria-live="polite">
       <span id="announceKicker">WAVE 01</span>
-      <strong id="announceTitle">四门同开</strong>
+      <b id="announceTitle">PORTALS OPEN</b>
+      <span id="announceSub">2 + 2 CONTACTS</span>
     </div>
 
     <div id="toast" class="toast" aria-live="polite">
-      <span class="toast-line"></span>
-      <span id="toastText">四个深紫传送门，每 20 秒各释放 2 只史莱姆。</span>
-      <span class="toast-line"></span>
+      <span class="toast-mark" aria-hidden="true"></span>
+      <span id="toastText">A / D 移动 · SPACE 翻转矩形 · E 进入中央裂缝</span>
     </div>
 
-    <div id="portalPrompt" class="portal-prompt" aria-live="polite">
-      <span class="keycap">E</span>
-      <span class="prompt-copy">
-        <b id="promptMain">转向蓝轴</b>
-        <small id="promptSub">中心传送门 · 红轴 → 蓝轴</small>
+    <div id="riftPrompt" class="rift-prompt" aria-live="polite">
+      <span class="keycap" id="riftKey">E</span>
+      <span class="rift-copy">
+        <b id="riftMain">进入裂缝</b>
+        <small id="riftSub">俯视切换 → BLUE / ECONOMY</small>
       </span>
-      <span class="prompt-diamond" aria-hidden="true"></span>
+      <span class="rift-caret" aria-hidden="true"></span>
     </div>
 
-    <div id="offlaneAlert" class="offlane-alert" aria-live="polite">
-      <span class="alert-bar"></span>
-      <b id="offlaneAlertText">蓝轴 · 0</b>
-      <span>另轴逼近</span>
-    </div>
-
-    <footer class="bottombar">
-      <div class="controls">
-        <div class="control-row">
-          <span class="keycap small">A</span><span class="keycap small">D</span><span class="control-word">移动</span>
+    <footer class="bottombar" aria-label="操作与武器">
+      <div class="control-block">
+        <div class="control-line">
+          <span class="keycap small">A</span><span class="keycap small">D</span><span class="control-word">MOVE</span>
           <span class="divider"></span>
-          <span class="keycap small">E</span><span class="control-word">中心转向</span>
+          <span class="keycap small">SPACE</span><span class="control-word">FLIP</span>
           <span class="divider"></span>
-          <span class="keycap small">P</span><span class="control-word">暂停</span>
+          <span class="keycap small">E</span><span class="control-word">RIFT</span>
+          <span class="divider"></span>
+          <span class="keycap small">P</span><span class="control-word">PAUSE</span>
         </div>
-        <p>移动礼帽，靠近中央传送门后互动。</p>
+        <p>红轴负责防守；蓝轴是经济与升级预留区。</p>
       </div>
 
-      <div class="bottom-right">
-        <div class="score-panel">
-          <span class="eyebrow">SCORE</span>
+      <div class="bottom-data">
+        <div class="shape-state">
+          <span class="micro-label">FORM</span>
+          <span id="shapeGlyph" class="shape-glyph" aria-hidden="true"></span>
+          <b id="shapeText">VERTICAL</b>
+        </div>
+        <div class="weapon-block" id="weaponBlock">
+          <span class="micro-label">AUTO BOW</span>
+          <div class="charge-track" aria-hidden="true"><i id="chargeFill"></i></div>
+          <b><span id="weaponState">1.0 HZ</span> <em>/ DMG 1</em></b>
+        </div>
+        <div class="score-block">
+          <span class="micro-label">SCORE</span>
           <b id="score">000000</b>
           <small>BEST <span id="best">000000</span></small>
-        </div>
-        <div class="weapon-panel" aria-label="武器状态">
-          <div class="charge-ring" id="chargeRing" style="--charge:1">
-            <span></span>
-          </div>
-          <div class="weapon-copy">
-            <span class="eyebrow">AUTO CROSSBOW</span>
-            <b>1.0 <em>/ SEC</em></b>
-            <small>伤害 1 · 自动锁定</small>
-          </div>
         </div>
       </div>
     </footer>
@@ -152,65 +124,68 @@
         <button class="touch-btn" id="touchLeft" type="button" aria-label="向左移动">←</button>
         <button class="touch-btn" id="touchRight" type="button" aria-label="向右移动">→</button>
       </div>
-      <button class="touch-btn switch-btn" id="touchSwitch" type="button" aria-label="在中心传送门转向">转向<small>E</small></button>
+      <div class="touch-actions">
+        <button class="touch-btn action-btn" id="touchFlip" type="button" aria-label="翻转角色">翻转<small>SPACE</small></button>
+        <button class="touch-btn action-btn rift-btn" id="touchRift" type="button" aria-label="进入中央裂缝">裂缝<small>E</small></button>
+      </div>
     </div>
 
     <section id="gameoverOverlay" class="overlay" hidden aria-modal="true" role="dialog" aria-labelledby="gameoverTitle">
       <div class="overlay-card">
-        <span class="overline">SIGNAL LOST · CORE 00</span>
-        <div class="overlay-glyph" aria-hidden="true">十</div>
-        <h2 id="gameoverTitle">回廊失守</h2>
-        <p>中央传送门已被史莱姆吞没。红与蓝，暂时都归于黑暗。</p>
+        <span class="overline">CORE INTEGRITY / 00</span>
+        <div class="overlay-glyph" aria-hidden="true"><i></i><b></b></div>
+        <h2 id="gameoverTitle">CORE LOST</h2>
+        <p class="overlay-cn">中央裂缝已被黑圆吞没。回廊停止响应。</p>
         <div class="result-grid">
-          <div><span>坚守波次</span><b id="finalWave">0</b></div>
-          <div><span>击破史莱姆</span><b id="finalKills">0</b></div>
-          <div><span>最终得分</span><b id="finalScore">000000</b></div>
+          <div><span>WAVES</span><b id="finalWave">0</b></div>
+          <div><span>KILLS</span><b id="finalKills">0</b></div>
+          <div><span>SCORE</span><b id="finalScore">000000</b></div>
         </div>
-        <button id="restartBtn" class="primary-btn" type="button"><span>重新进入回廊</span><kbd>R</kbd></button>
+        <button id="restartBtn" class="primary-btn" type="button"><span>重新开始</span><kbd>R</kbd></button>
       </div>
     </section>
 
     <section id="pauseOverlay" class="overlay" hidden aria-modal="true" role="dialog" aria-labelledby="pauseTitle">
       <div class="overlay-card compact">
-        <span class="overline">HOLD THE AXIS</span>
-        <h2 id="pauseTitle">回廊静止</h2>
-        <p>波次计时已暂停。按 P 或点击继续。</p>
-        <button id="resumeBtn" class="primary-btn" type="button"><span>继续防守</span><kbd>P</kbd></button>
+        <span class="overline">SIMULATION HALTED</span>
+        <h2 id="pauseTitle">PAUSED</h2>
+        <p class="overlay-cn">时间已冻结。按 P 或点击继续。</p>
+        <button id="resumeBtn" class="primary-btn" type="button"><span>继续</span><kbd>P</kbd></button>
       </div>
     </section>
 
-    <section id="helpOverlay" class="overlay help-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="helpTitle">
+    <section id="helpOverlay" class="overlay" hidden aria-modal="true" role="dialog" aria-labelledby="helpTitle">
       <div class="overlay-card help-card">
         <button id="closeHelpBtn" class="modal-close" type="button" aria-label="关闭说明">×</button>
-        <span class="overline">FIELD MANUAL · 01</span>
-        <h2 id="helpTitle">如何守住十字</h2>
+        <span class="overline">SYSTEM MANUAL / 02</span>
+        <h2 id="helpTitle">几何规则</h2>
         <div class="help-grid">
           <article>
             <span class="help-index">01</span>
-            <h3>两条横轴</h3>
-            <p>回廊本来是一个「十」。在横向视角里，你只能看见其中一条横轴：红轴或蓝轴。另一条轴在中心与它垂直相交。</p>
+            <h3>红色战斗轴</h3>
+            <p>左右两扇边缘传送门会以黑色细线存在。每 20 秒，两条细线展开成黑色长方形，各释放 2 个黑色圆形。</p>
           </article>
           <article>
             <span class="help-index">02</span>
-            <h3>中心转向</h3>
-            <p>走到画面中央的深紫传送门，按 E（或触屏「转向」）旋转整个视角，进入另一条轴。两条轴的敌人会同时前进。</p>
+            <h3>矩形角色</h3>
+            <p>角色是一块黑色矩形。按 SPACE 在竖向与横向之间翻转。弩箭固定在矩形边缘，会自动向最近的敌人发射。</p>
           </article>
           <article>
             <span class="help-index">03</span>
-            <h3>四门来袭</h3>
-            <p>红蓝两轴各有左右两扇深紫传送门。每 20 秒，四扇门各释放 2 只 1 点生命的史莱姆，走向中心核心。</p>
+            <h3>三格生命</h3>
+            <p>黑色圆形史莱姆拥有 3 点生命。自动弩箭每秒攻击一次，伤害 1；黑圆碰到中央裂缝会扣 1 点核心完整度。</p>
           </article>
           <article>
             <span class="help-index">04</span>
-            <h3>自动弩箭</h3>
-            <p>礼帽角色会自动锁定当前轴上最靠近核心的敌人。弩箭每秒发射 1 次，伤害 1；史莱姆碰到核心会扣 1 点完整度。</p>
+            <h3>蓝色经济轴</h3>
+            <p>蓝轴没有传送门，也不会刷怪。它是之后经济与升级系统的预留区域。通过中央裂缝进入蓝轴时，会短暂切入俯视视角。</p>
           </article>
         </div>
         <div class="help-note">
-          <span>小提示</span>
-          <p>右上角的 AXIS MAP 同时显示两条轴。蓝轴告急时，先回中心转向，再清理靠近核心的敌人。</p>
+          <span>NOTE</span>
+          <p>进入蓝轴后，红轴仍会继续运行。左上角会提示红轴未处理的敌人数；必要时回到裂缝切换回战斗轴。</p>
         </div>
-        <button id="helpStartBtn" class="primary-btn" type="button"><span>返回回廊</span><kbd>E</kbd></button>
+        <button id="helpStartBtn" class="primary-btn" type="button"><span>返回</span><kbd>H</kbd></button>
       </div>
     </section>
 
